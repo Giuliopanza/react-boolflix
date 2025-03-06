@@ -1,35 +1,38 @@
 import { createContext, useState, useContext } from 'react';
 
+import axios from 'axios';
+
 const GlobalContext = createContext();
 
 const GlobalProvider = ({ children }) => {
 
     const apiKey= import.meta.env.VITE_API_KEY;
     
-    const urlFilm = import.meta.env.VITE_API_URL_MOVIES;
+    const url = import.meta.env.VITE_API_URL;
 
-    const urlSerie = import.meta.env.VITE_API_URL_MOVIES;
+    const [query, setQuery] = useState();
 
-    const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `${apiKey}`
-        }
-    };
+    const [film, setFilm] = useState ()
 
-    fetch(urlFilm, options)
-    .then(res => res.json())
-    .then(json => console.log(json))
-    .catch(err => console.error(err));
+    const [tv, setTv] = useState ()
 
-   fetch(urlSerie, options)
-   .then(res => res.json())
-   .then(json => console.log(json))
-   .catch(err => console.error(err));
+    function fetchFilm() {
+      axios.get(`${url}/movie?api_key=${apiKey}&query=${query}`)
+      .then((res) => setFilm(res.data));
+    }
 
+    function fetchTv() {
+      axios.get(`${url}/tv?api_key=${apiKey}&query=${query}`)
+      .then((res) => setTv(res.data));      
+    }
+
+    
 
   const value = {
+    query,
+    setQuery,
+    film,
+    tv
   }
 
 
